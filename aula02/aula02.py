@@ -3,6 +3,12 @@ import sys
 from rich import inspect
 
 
+class desenharNuvem:
+    def __init__(circulos):
+        # Atributos de instância 
+        self.circulos = circulos
+        for contador in range(1, self.circulos):
+            pygame.draw.circle(tela, branco, (240 + contador * 20, 100 if contador % 2 != 0 else 70), 30)
 
 
 
