@@ -4,14 +4,16 @@ from rich import inspect
 
 
 class desenharNuvem:
-    def __init__(self, circulos, inicio):
+    def __init__(self, circulos=10, inicio=240, altura=100):
         # Atributos de instância 
         self.circulos = circulos
         self.inicio = inicio
+        self.altura = altura
         
-        
+        if self.circulos % 2 != 0:
+            self.circulos += 1
         for contador in range(1, self.circulos):
-            pygame.draw.circle(tela, branco, (self.inicio + contador * 20, 100 if contador % 2 != 0 else 70), 30)
+            pygame.draw.circle(tela, branco, (self.inicio + contador * 20, self.altura if contador % 2 != 0 else self.altura - 30), 30)
 
 
 # Coordenadas x, y no retângulo se referem sempre ao canto superior esquerdo
@@ -67,9 +69,9 @@ while True:
     pygame.draw.circle(tela, verde_claro, (690, 260), 50)
     pygame.draw.circle(tela, verde_claro, (590, 260), 50)
     
-    desenharNuvem(10, 240)
+    desenharNuvem()
     desenharNuvem(10, 520)
-
+    
     # Atualização
     pygame.display.update()
 
