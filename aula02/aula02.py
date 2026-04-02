@@ -1,12 +1,13 @@
 import pygame
 import sys
+from rich import inspect
 
 
 pygame.init()
 tela = pygame.display.set_mode((800, 600))
 pygame.display.set_caption('Aula 2')
 clock = pygame.time.Clock()
-
+inspect(pygame.draw.circle)
 
 while True:
     # Eventos
