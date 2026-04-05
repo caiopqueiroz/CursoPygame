@@ -17,8 +17,8 @@ pontos = 0
 v_player = 5
 l_player = 50
 h_player = 50
-x_player = (800 - l_player) / 2
-y_player = (600 - h_player) / 2
+x_player = (800 - l_player) // 2
+y_player = (600 - h_player) // 2
 # inimigo
 v_inimigo = 2
 l_inimigo = 50
@@ -32,7 +32,7 @@ y_inimigo2 = 500
 # item
 x_item = 100
 y_item = 100
-r_item = 12.5
+r_item = 12
 
 while True:
     # eventos
@@ -58,27 +58,23 @@ while True:
         x_player += v_player
 
     # movimentação dos inimigos
-    if x_inimigo != x_player:
-        if x_player > x_inimigo:
-            x_inimigo += v_inimigo
-        else: 
-            x_inimigo -= v_inimigo
-    if y_inimigo != y_player:
-        if y_player > y_inimigo:
-            y_inimigo += v_inimigo
-        else:
-            y_inimigo -= v_inimigo
-    
-    if x_inimigo2 != x_player:
-        if x_player > x_inimigo2:
-            x_inimigo2 += v_inimigo2
-        else: 
-            x_inimigo2 -= v_inimigo2
-    if y_inimigo2 != y_player:
-        if y_player > y_inimigo2:
-            y_inimigo2 += v_inimigo2
-        else:
-            y_inimigo2 -= v_inimigo2
+    if x_player > x_inimigo:
+        x_inimigo += v_inimigo
+    elif x_player < x_inimigo: 
+        x_inimigo -= v_inimigo
+    if y_player > y_inimigo:
+        y_inimigo += v_inimigo
+    elif y_player < y_inimigo:
+        y_inimigo -= v_inimigo
+
+    if x_player > x_inimigo2:
+        x_inimigo2 += v_inimigo2
+    elif x_player < x_inimigo2: 
+        x_inimigo2 -= v_inimigo2
+    if y_player > y_inimigo2:
+        y_inimigo2 += v_inimigo2
+    elif y_player < y_inimigo2:
+        y_inimigo2 -= v_inimigo2
 
     # definindo colisão
     tela_colisao_cima = pygame.Rect(0, -1, 800, 1)
@@ -106,10 +102,14 @@ while True:
 
     if player_colisao.colliderect(inimigo_colisao):
         pygame.quit()
+        sys.exit()
+    if player_colisao.colliderect(inimigo2_colisao):
+        pygame.quit()
+        sys.exit()
 
     if player_colisao.colliderect(item_colisao):
-        x_item = randint(0, 785)
-        y_item = randint(0, 585)
+        x_item = randint(0, 800 - r_item)
+        y_item = randint(0, 600 - r_item)
         pontos += 1
         print(f'Pontos: {pontos}')
 
