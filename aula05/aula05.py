@@ -1,5 +1,6 @@
 import pygame 
 import sys 
+from random import randint
 
 
 pygame.init()
@@ -11,6 +12,7 @@ estado = 'jogando'
 preto = (0, 0, 0)
 azul = (0, 0, 255)
 vermelho = (255, 0, 0)
+verde = (0, 255, 0)
 # player
 l_player = 30
 h_player = 60
@@ -24,6 +26,10 @@ h_inimigo = 25
 v_inimigo = 2
 x_inimigo = 700
 y_inimigo = 500
+# item
+r_item = 12
+x_item = 700
+y_item = 100
 
 while True:
     # eventos
@@ -82,13 +88,15 @@ while True:
     # definindo colisão
     colisao_player = pygame.Rect(x_player, y_player - 2 * r_player, l_player, h_player + 2 * r_player)
     colisao_inimigo = pygame.Rect(x_inimigo, y_inimigo, l_inimigo, h_inimigo)
+    colisao_item = pygame.Rect(x_item - r_item, y_item - r_item, 2 * r_item, 2 * r_item)
 
     # aplicando colisão
     if colisao_player.colliderect(colisao_inimigo):
         estado = 'game_over'
-    #if colisao_inimigo.colliderect(colisao_player):
-    #    x_inimigo = x_anterior_inimigo
-    #    y_inimigo = y_anterior_inimigo
+    if colisao_player.colliderect(colisao_item):
+        pontos += 1
+        x_item = randint(r_item, 800 - r_item)
+        y_item = randint(r_item, 600 - r_item)
 
     # desenho
     tela.fill(preto)
@@ -96,6 +104,7 @@ while True:
         pygame.draw.rect(tela, azul, (x_player, y_player, l_player, h_player))
         pygame.draw.circle(tela, azul, (x_player + r_player, y_player - r_player), r_player)
         pygame.draw.rect(tela, vermelho, (x_inimigo, y_inimigo, l_inimigo, h_inimigo))
+        pygame.draw.circle(tela, verde, (x_item, y_item), r_item)
     elif estado == 'game_over':
         fonte = pygame.font.SysFont(None, 36)
         #texto = fonte.render(f'Pontos: {pontos}', True, (255, 255, 255))
