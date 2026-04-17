@@ -1,4 +1,5 @@
 # estilo candy crush - formar sequências de cores 
+# próximo objetivo - criar um gerador de peças: azuis e vermelhas
 
 
 import pygame
