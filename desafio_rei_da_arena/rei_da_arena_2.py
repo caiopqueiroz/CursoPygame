@@ -19,8 +19,9 @@ from random import randint
 
 
 pygame.init()
+pygame.mixer.init()
 tela = pygame.display.set_mode((800, 600))
-pygame.display.set_caption('Rei da Arena')
+pygame.display.set_caption('25 do 4')
 clock = pygame.time.Clock()
 # cores
 preto = (0, 0, 0)
@@ -30,22 +31,32 @@ azul = (0, 0, 255)
 vermelho = (255, 0, 0)
 vermelho_escuro = (139, 0, 0)
 amarelo = (255, 255, 0)
+marrom = (101, 67, 33)
 # estado 
 estado = 'inicio'
 # fontes
 titulo = pygame.font.SysFont(None, 72)
 texto = pygame.font.SysFont(None, 36)
+# efeitos sonoros
+som_morte = pygame.mixer.Sound('desafio_rei_da_arena/sons/morte.wav')
+som_dano = pygame.mixer.Sound('desafio_rei_da_arena/sons/inimigo.wav')
+som_item = pygame.mixer.Sound('desafio_rei_da_arena/sons/item.wav')
+# música
+pygame.mixer.music.load('desafio_rei_da_arena/sons/beyond_journey.mp3')
+# tocando música
+pygame.mixer.music.play(-1)
+pygame.mixer.music.set_volume(0.5)
 # textos
 nome = titulo.render('Feliz mesversário!', True, branco)
 sabe_aqueles = texto.render('Sabe aqueles dias infernais no cartório em que você', True, branco)
 voce_gostaria = texto.render('gostaria de ter uma arma branca pra eliminar todos', True, branco)
 todos_os_papeis = texto.render('os papéis malvados enquanto come vários docinhos?', True, branco)
 agora_voce = texto.render('Agora você pode ter essa experiência, amor!', True, branco)
-aperte_o = texto.render('Use WASD para se mover e aperte O para derrotar', True, branco)
+aperte_o = texto.render('Use "WASD" para se mover e aperte "O" para derrotar', True, branco)
 os_inimigos = texto.render('os inimigos que estiverem no alcance da espada', True, branco)
 essa_nao = texto.render('Essa não! O trabalho te pegou!', True, branco)
 mas_voce = texto.render('Mas você não pode desistir dos docinhos, tente de novo!', True, branco)
-aperte_p = texto.render('Aperte P para jogar', True, branco)
+aperte_p = texto.render('Aperte "P" para jogar', True, branco)
 game_over = titulo.render('Game Over', True, branco)
 # player 
 estado_player = 'direita'
@@ -68,8 +79,8 @@ espada_player_imagem = pygame.transform.scale(espada_player_imagem, (60, 10))
 v_inimigo = 2
 l_inimigo = l_player
 h_inimigo = h_player
-x_inimigo = randint(0, 800 - l_inimigo)
-y_inimigo = randint(0, 600 - h_inimigo)
+x_inimigo = 700
+y_inimigo = 500
 inimigo_imagem = pygame.image.load('desafio_rei_da_arena/papel.png')
 inimigo_imagem = pygame.transform.scale(inimigo_imagem, (60, 60))
 # reliquia 
@@ -93,17 +104,15 @@ while True:
                 if estado == 'inicio':
                     estado = 'jogando'
                 if estado == 'gameover':
-                    if x_player > 400:
-                        x_inimigo = randint(0, 400 - l_inimigo)
-                    else:
-                        x_inimigo = randint(400, 800 - l_inimigo)
-                    y_inimigo = randint(0, 600 - h_inimigo)
+                    x_inimigo = 700
+                    y_inimigo = 500
                     x_player = (800 - l_player) // 2
                     y_player = (600 - h_player) // 2
                     pontos = 0 
                     estado = 'jogando'
             if evento.key == pygame.K_o:
-                if colisao_espada_player.colliderect(colisao_inimigo): 
+                if colisao_espada_player.colliderect(colisao_inimigo):
+                    som_dano.play() 
                     if x_player > 400:
                         x_inimigo = randint(0, 400 - l_inimigo)
                     else:
@@ -146,6 +155,7 @@ while True:
 
         # aplicando colisões
         if colisao_player.colliderect(colisao_reliquia):
+            som_item.play()
             if x_player > 400:
                 x_reliquia = randint(0, 400 - l_reliquia)
             else: 
@@ -153,6 +163,7 @@ while True:
             y_reliquia = randint(0, 600 - h_reliquia)
             pontos += 1
         if colisao_inimigo.colliderect(colisao_player):
+            som_morte.play()
             estado = 'gameover'
 
         # movimentação do inimigo
@@ -206,7 +217,7 @@ while True:
         tela.blit(aperte_p, (50, 500))
 
     if estado == 'jogando':
-        tela.fill(cinza)
+        tela.fill(marrom)
         # relíquia 
         tela.blit(reliquia_imagem, (x_reliquia, y_reliquia))
         # player
