@@ -47,15 +47,18 @@ amarelo = (255, 255, 0)
 vermelho = (255, 0, 0)
 roxo = (160, 32, 240)
 # estado 
-estado = 'jogando'
+estado = 'inicio'
 # fonte 
 titulo = pygame.font.SysFont(None, 72)
 texto = pygame.font.SysFont(None, 36)
 # texto
 game_over = titulo.render('GAME OVER', True, branco)
 aperte_p = texto.render('Aperte P para reiniciar o jogo', True, branco)
+aperte_r = texto.render('Aperte R para voltar à tela de início', True, branco)
 mensagem = ''
 mensagem_slow = ''
+rei_da_arena = titulo.render('-- REI DA ARENA SUPREMO --', True, branco)
+p_iniciar = texto.render('Aperte P para iniciar o jogo', True, branco)
 # player
 pontos = 0
 pontos_acumulados = 0
@@ -105,8 +108,24 @@ while True:
             pygame.quit()
             sys.exit()
         if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_r:
+                if estado == 'gameover':
+                    estado = 'inicio'
             if evento.key == pygame.K_p:
                 if estado == 'gameover':
+                    estado = 'jogando'
+                    x_player = 100
+                    y_player = 100
+                    x_inimigo1 = 700
+                    y_inimigo1 = 500
+                    v_inimigo1 = 2
+                    x_inimigo3 = (800 - l_inimigo3) // 2
+                    y_inimigo3 = (600 - h_inimigo3) // 2
+                    pontos = 0
+                    pontos_acumulados = 0
+                    pontos_sequencia = 0
+                    item_slow = False
+                if estado == 'inicio':
                     estado = 'jogando'
                     x_player = 100
                     y_player = 100
@@ -279,6 +298,8 @@ while True:
     # desenho 
     if estado == 'inicio':
         tela.fill(preto)
+        tela.blit(rei_da_arena, (50, 100))
+        tela.blit(p_iniciar, (50, 200))
 
     if estado == 'jogando':
         tela.fill(cinza)
@@ -304,7 +325,8 @@ while True:
         tela.fill(preto)
         tela.blit(game_over, (100, 100))
         tela.blit(aperte_p, (100, 200))
-        tela.blit(mostrar_pontos, (100, 300))
+        tela.blit(aperte_r, (100, 300))
+        tela.blit(mostrar_pontos, (100, 400))
 
     # atualizações
     pygame.display.update()
