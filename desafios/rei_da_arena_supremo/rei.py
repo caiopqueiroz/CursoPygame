@@ -23,6 +23,7 @@
 # item novo aparece em uma posição aleatória na tela
 # quando coletado
 # a velocidade todos os inimigos diminui por 10 segundos
+# adicionar os sprites e configurar posição esquerda e direita de cada um 
 
 # ideias para aprimorar:
 # criar um gerador de inimigos que spawna mais a cada soma +x de pontos 
@@ -59,7 +60,11 @@ mensagem = ''
 mensagem_slow = ''
 rei_da_arena = titulo.render('-- REI DA ARENA SUPREMO --', True, branco)
 p_iniciar = texto.render('Aperte P para iniciar o jogo', True, branco)
+
 # player
+sprite_player = pygame.image.load('desafios/rei_da_arena_supremo/sprites/player.png').convert_alpha()
+sprite_player = pygame.transform.scale(sprite_player, (60, 60))
+posicao_player = 'direita'
 pontos = 0
 pontos_acumulados = 0
 pontos_sequencia = 0
@@ -68,30 +73,42 @@ l_player = 60
 h_player = 60
 x_player = 100
 y_player = 100
+
 # reliquia
 l_reliquia = 40
 h_reliquia = 40
 x_reliquia = randint(400, 800 - l_reliquia)
 y_reliquia = randint(0, 600 - h_reliquia)
+
 # item slow 
 item_slow = False
 l_item_slow = 30
 h_item_slow = 30
 x_item_slow = 800
 y_item_slow = 600
+
 # inimigo tipo 1
+sprite_inimigo1 = pygame.image.load('desafios/rei_da_arena_supremo/sprites/inimigo1.png').convert_alpha()
+sprite_inimigo1 = pygame.transform.scale(sprite_inimigo1, (60, 60))
+posicao_inimigo1 = 'esquerda'
 v_inimigo1 = 2
 l_inimigo1 = 60
 h_inimigo1 = 60
 x_inimigo1 = 700
 y_inimigo1 = 500
+
 # inimigo tipo 2
+sprite_inimigo2 = pygame.image.load('desafios/rei_da_arena_supremo/sprites/inimigo2.png').convert_alpha()
+sprite_inimigo2 = pygame.transform.scale(sprite_inimigo2, (30, 70))
 v_inimigo2 = 4
 l_inimigo2 = 30
 h_inimigo2 = 70
 x_inimigo2 = 700
 y_inimigo2 = 500
+
 # inimigo tipo 3
+sprite_inimigo3 = pygame.image.load('desafios/rei_da_arena_supremo/sprites/inimigo3.png').convert_alpha()
+sprite_inimigo3 = pygame.transform.scale(sprite_inimigo3, (30, 30))
 v_vertical = 0
 v_horizontal = 2
 l_inimigo3 = 30
@@ -108,6 +125,16 @@ while True:
             pygame.quit()
             sys.exit()
         if evento.type == pygame.KEYDOWN:
+            # mudando a posição do sprite do player 
+            if evento.key == pygame.K_a:
+                if posicao_player == 'direita':
+                    posicao_player = 'esquerda'
+                    sprite_player = pygame.transform.flip(sprite_player, True, False)
+            if evento.key == pygame.K_d:
+                if posicao_player == 'esquerda':
+                    posicao_player = 'direita'
+                    sprite_player = pygame.transform.flip(sprite_player, True, False)
+            
             if evento.key == pygame.K_r:
                 if estado == 'gameover':
                     estado = 'inicio'
@@ -255,11 +282,17 @@ while True:
         # movimentação do inimigo tipo 1 
         if x_inimigo1 > x_player:
             x_inimigo1 -= v_inimigo1
-        else:
+            if posicao_inimigo1 == 'esquerda':
+                posicao_inimigo1 = 'direita'
+                sprite_inimigo1 = pygame.transform.flip(sprite_inimigo1, True, False)
+        elif x_inimigo1 < x_player:
             x_inimigo1 += v_inimigo1
+            if posicao_inimigo1 == 'direita':
+                posicao_inimigo1 = 'esquerda'
+                sprite_inimigo1 = pygame.transform.flip(sprite_inimigo1, True, False) 
         if y_inimigo1 > y_player:
             y_inimigo1 -= v_inimigo1
-        else:
+        elif y_inimigo1 < y_player:
             y_inimigo1 += v_inimigo1
 
         if pontos >= 30:
@@ -304,19 +337,19 @@ while True:
     if estado == 'jogando':
         tela.fill(cinza)
         # player 
-        pygame.draw.rect(tela, azul, (x_player, y_player, h_player, l_player))
+        tela.blit(sprite_player, (x_player, y_player))
         # relíquias
         pygame.draw.rect(tela, amarelo, (x_reliquia, y_reliquia, l_reliquia, h_reliquia))
         # item_slow
         if item_slow: 
             pygame.draw.rect(tela, roxo, (x_item_slow, y_item_slow, l_item_slow, h_item_slow))
         # inimigo tipo 1 
-        pygame.draw.rect(tela, vermelho, (x_inimigo1, y_inimigo1, l_inimigo1, h_inimigo1))
+        tela.blit(sprite_inimigo1, (x_inimigo1, y_inimigo1))
         if pontos >= 30:
             # inimigo tipo 2 
-            pygame.draw.rect(tela, vermelho, (x_inimigo2, y_inimigo2, l_inimigo2, h_inimigo2))
+            tela.blit(sprite_inimigo2, (x_inimigo2, y_inimigo2))
         # inimigo tipo 3
-        pygame.draw.rect(tela, vermelho, (x_inimigo3, y_inimigo3, l_inimigo3, h_inimigo3))
+        tela.blit(sprite_inimigo3, (x_inimigo3, y_inimigo3))
         tela.blit(mostrar_pontos, (50, 50))
         tela.blit(velocidade_aumentou, (480, 50))
         tela.blit(velocidade_diminuiu, (180, 250))
