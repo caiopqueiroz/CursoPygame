@@ -100,6 +100,7 @@ y_inimigo1 = 500
 # inimigo tipo 2
 sprite_inimigo2 = pygame.image.load('desafios/rei_da_arena_supremo/sprites/inimigo2.png').convert_alpha()
 sprite_inimigo2 = pygame.transform.scale(sprite_inimigo2, (30, 70))
+posicao_inimigo2 = 'esquerda'
 v_inimigo2 = 4
 l_inimigo2 = 30
 h_inimigo2 = 70
@@ -109,6 +110,7 @@ y_inimigo2 = 500
 # inimigo tipo 3
 sprite_inimigo3 = pygame.image.load('desafios/rei_da_arena_supremo/sprites/inimigo3.png').convert_alpha()
 sprite_inimigo3 = pygame.transform.scale(sprite_inimigo3, (30, 30))
+posicao_inimigo3 = 'direita'
 v_vertical = 0
 v_horizontal = 2
 l_inimigo3 = 30
@@ -258,7 +260,8 @@ while True:
                 item_slow = False
 
         if colisao_player.colliderect(colisao_inimigo1):
-            estado = 'gameover'
+            #estado = 'gameover'
+            pass
         
         if pontos >= 30:
             colisao_inimigo2 = pygame.Rect(x_inimigo2, y_inimigo2, l_inimigo2, h_inimigo2)
@@ -281,34 +284,56 @@ while True:
 
         # movimentação do inimigo tipo 1 
         if x_inimigo1 > x_player:
-            x_inimigo1 -= v_inimigo1
+            # virando sprite pra direita 
             if posicao_inimigo1 == 'esquerda':
-                posicao_inimigo1 = 'direita'
                 sprite_inimigo1 = pygame.transform.flip(sprite_inimigo1, True, False)
-        elif x_inimigo1 < x_player:
-            x_inimigo1 += v_inimigo1
+                posicao_inimigo1 = 'direita'
+            x_inimigo1 -= v_inimigo1
+        if x_inimigo1 < x_player:
+            # virando sprite pra esquerda
             if posicao_inimigo1 == 'direita':
+                sprite_inimigo1 = pygame.transform.flip(sprite_inimigo1, True, False)
                 posicao_inimigo1 = 'esquerda'
-                sprite_inimigo1 = pygame.transform.flip(sprite_inimigo1, True, False) 
+            x_inimigo1 += v_inimigo1
+
         if y_inimigo1 > y_player:
             y_inimigo1 -= v_inimigo1
-        elif y_inimigo1 < y_player:
+        if y_inimigo1 < y_player:
             y_inimigo1 += v_inimigo1
 
         if pontos >= 30:
             # movimentação do inimigo tipo 2
             if x_inimigo2 > x_player:
-                x_inimigo2 -= v_inimigo2 
-            else:
+                # virando o sprite para direita
+                if posicao_inimigo2 == 'esquerda':
+                    sprite_inimigo2 = pygame.transform.flip(sprite_inimigo2, True, False)
+                    posicao_inimigo2 = 'direita'
+                x_inimigo2 -= v_inimigo2
+            if x_inimigo2 < x_player:
+                # virando sprite pra esquerda
+                if posicao_inimigo2 == 'direita':
+                    sprite_inimigo2 = pygame.transform.flip(sprite_inimigo2, True, False)
+                    posicao_inimigo2 = 'esquerda'
                 x_inimigo2 += v_inimigo2
+
             if y_inimigo2 > y_player:
                 y_inimigo2 -= v_inimigo2
-            else:
+            if y_inimigo2 < y_player:
                 y_inimigo2 += v_inimigo2
 
         # movimentação do inimigo tipo 3 
         x_inimigo3 += v_horizontal
         y_inimigo3 += v_vertical
+        # virando sprite pra direita
+        if v_horizontal == 2:
+            if posicao_inimigo3 == 'esquerda':
+                posicao_inimigo3 = 'direita'
+                sprite_inimigo3 = pygame.transform.flip(sprite_inimigo3, True, False)
+        # virando sprite pra esquerda
+        if v_horizontal == -2:
+            if posicao_inimigo3 == 'direita':
+                posicao_inimigo3 = 'esquerda'
+                sprite_inimigo3 = pygame.transform.flip(sprite_inimigo3, True, False)
         if randint(0, 100) == 0:
             if v_horizontal == 2 or v_horizontal == -2:
                 v_horizontal = 0
