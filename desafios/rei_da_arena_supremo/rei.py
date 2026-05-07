@@ -6,24 +6,11 @@
 # fugir de inimigos
 # virar o 'Rei da Arena Supremo'
 
-# player se move com WASD - tem um sprite - som ao andar e ao agir 
-# relíquias tem spawn aleatório - dão pontos - som ao coletar
-# 3 tipos de inimigos:
-# tipo 1: lento - segue o player
-# tipo 2: após X pontos - mais rápido
-# tipo 3: movimento aleatório  
-# encostar no inimigo: game over - som de morte 
-# a cada x pontos: velocidade do inimigo tipo 1 aumenta 
-# mostrar pontos na tela durante o jogo
-# exibir mensagem quando o a velocidade aumentar
-# habilidade slow motion: se o jogador pegar x relíquias em num intervalo de até 3 segundos, aparece um item coletável que deixa os inimigos mais lentos 
-# slow motion - descrição detalhada:
-# jogador pega 3 relíquias 
-# se passarem menos de 3 segundos
-# item novo aparece em uma posição aleatória na tela
-# quando coletado
-# a velocidade todos os inimigos diminui por 10 segundos
-# adicionar os sprites e configurar posição esquerda e direita de cada um 
+# adicionar sons: som quando o player morre / som de pegar item / som quando os inimigos ficam mais lentos / som quando os inimigos voltam à velocidade normal
+# redesenhar o inimigo 2
+# desenhar um cenário - no piskel 
+# desenhar a relíquia e o item slow
+# adicionar botão de pause 
 
 # ideias para aprimorar:
 # criar um gerador de inimigos que spawna mais a cada soma +x de pontos 
@@ -60,6 +47,9 @@ mensagem = ''
 mensagem_slow = ''
 rei_da_arena = titulo.render('-- REI DA ARENA SUPREMO --', True, branco)
 p_iniciar = texto.render('Aperte P para iniciar o jogo', True, branco)
+# efeitos sonoros 
+som_morte = pygame.mixer.Sound('desafios/rei_da_arena_supremo/sons/morte.wav')
+som_reliquia = pygame.mixer.Sound('desafios/rei_da_arena_supremo/sons/reliquia.wav')
 
 # player
 sprite_player = pygame.image.load('desafios/rei_da_arena_supremo/sprites/player.png').convert_alpha()
@@ -141,6 +131,14 @@ while True:
                 if estado == 'gameover':
                     estado = 'inicio'
             if evento.key == pygame.K_p:
+                if estado == 'jogando':
+                    estado = 'pause'
+                    print(estado)
+                
+                # voltar do pause não está funcionando
+                if estado == 'pause':
+                    estado = 'jogando'
+                
                 if estado == 'gameover':
                     estado = 'jogando'
                     x_player = 100
@@ -206,7 +204,9 @@ while True:
         colisao_inimigo3 = pygame.Rect(x_inimigo3, y_inimigo3, l_inimigo3, h_inimigo3)
 
         # aplicando colisões
+        # colisão com a relíquia
         if colisao_player.colliderect(colisao_reliquia):
+            som_reliquia.play()
             # mudando a relíquia de posição 
             if x_player > 400:
                 x_reliquia = randint(0, 400 - l_reliquia)
@@ -259,16 +259,21 @@ while True:
                 print('inimigos mais lentos')
                 item_slow = False
 
+        # colisão com o inimigo 1
         if colisao_player.colliderect(colisao_inimigo1):
-            #estado = 'gameover'
-            pass
+            som_morte.play()
+            estado = 'gameover'
         
+        # colisão com o inimigo 2
         if pontos >= 30:
             colisao_inimigo2 = pygame.Rect(x_inimigo2, y_inimigo2, l_inimigo2, h_inimigo2)
             if colisao_player.colliderect(colisao_inimigo2):
+                som_morte.play()
                 estado = 'gameover'
         
+        # colisão com o inimigo 3
         if colisao_player.colliderect(colisao_inimigo3):
+            som_morte.play()
             estado = 'gameover'
 
         # movimentação do player
@@ -281,6 +286,16 @@ while True:
             y_player += v_player
         if teclas[pygame.K_d]:
             x_player += v_player
+
+        # impedindo o player de sair da tela 
+        if x_player < 0:
+            x_player = 0
+        if y_player < 0:
+            y_player = 0
+        if x_player > 800 - l_player:
+            x_player = 800 - l_player
+        if y_player >  600 - h_player:
+            y_player = 600 - h_player
 
         # movimentação do inimigo tipo 1 
         if x_inimigo1 > x_player:
@@ -378,6 +393,9 @@ while True:
         tela.blit(mostrar_pontos, (50, 50))
         tela.blit(velocidade_aumentou, (480, 50))
         tela.blit(velocidade_diminuiu, (180, 250))
+
+    if estado == 'pause':
+        tela.fill(azul)
 
     if estado == 'gameover':
         tela.fill(preto)
