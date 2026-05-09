@@ -133,12 +133,8 @@ while True:
             if evento.key == pygame.K_p:
                 if estado == 'jogando':
                     estado = 'pause'
-                    print(estado)
-                
-                # voltar do pause não está funcionando
-                if estado == 'pause':
+                elif estado == 'pause':
                     estado = 'jogando'
-                
                 if estado == 'gameover':
                     estado = 'jogando'
                     x_player = 100
