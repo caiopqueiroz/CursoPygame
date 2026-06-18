@@ -11,6 +11,7 @@ estado = 'batalha'
 # cores
 preto = (0, 0, 0)
 branco = (255, 255, 255)
+azul = (0, 0, 255)
 
 # fonte
 fonte = pygame.font.SysFont(None, 72)
@@ -29,6 +30,10 @@ x_seletor = 75
 y_seletor = 425
 l_seletor = 210
 
+# pokemon
+x_pokemon = 150
+y_pokemon = 150
+
 while True:
     # eventos
     for evento in pygame.event.get():
@@ -36,15 +41,21 @@ while True:
             pygame.quit()
             sys.exit()
         
+        # movimentando o seletor 
         if evento.type == pygame.KEYDOWN:
             if evento.key == pygame.K_d:
+                x_seletor += l_seletor
+            if evento.key == pygame.K_a:
+                x_seletor -= l_seletor
 
-    
     # lógica
 
     # desenho
     if estado == 'batalha':
         tela.fill(preto)
+
+        # desenhando o pokemon do jogador 
+        pygame.draw.rect(tela, azul, (x_pokemon, y_pokemon, 200, 400))
 
         # desenhando o painel de ações
         pygame.draw.rect(tela, branco, (x_painel, y_painel, l_painel, h_painel))
