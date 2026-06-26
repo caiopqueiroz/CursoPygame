@@ -43,12 +43,17 @@ y_seletor = y_original_seletor = 425
 l_seletor = 210
 
 # pokemon
+movimento_pokemon = False
 x_pokemon = 150
 y_pokemon = 150
+l_pokemon = 200
+h_pokemon = 400
 
 # inimigo
 x_inimigo = 550
 y_inimigo = 50
+l_inimigo = 100
+h_inimigo = 200
 
 while True:
     # eventos
@@ -67,31 +72,42 @@ while True:
             if evento.key == pygame.K_a:
                 x_seletor -= l_seletor
             
-            # trocando o estado do seletor
+            if evento.key == pygame.K_p:        
+                if x_seletor == x_original_seletor:
+                    if estado_seletor == 'atacar':
+                        movimento_pokemon = True
+
             if evento.key == pygame.K_p:
                 if x_seletor == x_original_seletor:
                     estado_seletor = 'atacar'
-                
-                if x_seletor == x_original_seletor:
-                    if estado_seletor == 'atacar':
-                        pass
-            
+
             # trocando o estado do seletor
             if evento.key == pygame.K_o:
                 if estado_seletor == 'atacar':
                     estado_seletor = 'principal'
 
     # lógica
+    if movimento_pokemon:
+        # pesquisar como redimensionar o retângulo (reduzir proporcionalmente) 
+        if x_pokemon + l_pokemon < x_inimigo:
+            x_pokemon += 5
+        if y_pokemon > y_inimigo:
+            y_pokemon -= 10
+        
+        if l_pokemon > l_inimigo:
+            l_pokemon -= 5
+        if h_pokemon > h_inimigo:
+            h_pokemon -= 5
 
     # desenho
     if estado == 'batalha':
         tela.fill(preto)
 
         # desenhando o pokemon do jogador 
-        pygame.draw.rect(tela, azul, (x_pokemon, y_pokemon, 200, 400))
+        pygame.draw.rect(tela, azul, (x_pokemon, y_pokemon, l_pokemon, h_pokemon))
 
         # desenhando o pokemon inimigo 
-        pygame.draw.rect(tela, vermelho, (x_inimigo, y_inimigo, 100, 200))
+        pygame.draw.rect(tela, vermelho, (x_inimigo, y_inimigo, l_inimigo, h_inimigo))
 
         # desenhando o painel de ações
         pygame.draw.rect(tela, branco, (x_painel, y_painel, l_painel, h_painel))
